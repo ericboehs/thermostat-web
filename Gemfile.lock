@@ -1,0 +1,122 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (5.0.0)
+      activesupport (= 5.0.0)
+    activerecord (5.0.0)
+      activemodel (= 5.0.0)
+      activesupport (= 5.0.0)
+      arel (~> 7.0)
+    activesupport (5.0.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (~> 0.7)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
+    arel (7.0.0)
+    awesome_print (1.7.0)
+    backports (3.6.8)
+    coderay (1.1.1)
+    concurrent-ruby (1.0.2)
+    em-websocket (0.5.1)
+      eventmachine (>= 0.12.9)
+      http_parser.rb (~> 0.6.0)
+    eventmachine (1.2.0.1)
+    ffi (1.9.14)
+    formatador (0.2.5)
+    guard (2.14.0)
+      formatador (>= 0.2.4)
+      listen (>= 2.7, < 4.0)
+      lumberjack (~> 1.0)
+      nenv (~> 0.1)
+      notiffany (~> 0.0)
+      pry (>= 0.9.12)
+      shellany (~> 0.0)
+      thor (>= 0.18.1)
+    guard-compat (1.2.1)
+    guard-livereload (2.5.2)
+      em-websocket (~> 0.5)
+      guard (~> 2.8)
+      guard-compat (~> 1.0)
+      multi_json (~> 1.8)
+    http_parser.rb (0.6.0)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    i18n (0.7.0)
+    json (1.8.3)
+    listen (3.1.5)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+      ruby_dep (~> 1.2)
+    lumberjack (1.0.10)
+    method_source (0.8.2)
+    minitest (5.9.0)
+    multi_json (1.12.1)
+    multi_xml (0.5.5)
+    nenv (0.3.0)
+    notiffany (0.1.0)
+      nenv (~> 0.1)
+      shellany (~> 0.0)
+    pg (0.18.4)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    pry-awesome_print (9.6.11)
+      awesome_print (>= 1.1.0, < 999)
+      pry (>= 0.9.0, < 999)
+    puma (3.4.0)
+    rack (1.6.4)
+    rack-livereload (0.3.16)
+      rack
+    rack-protection (1.5.3)
+      rack
+    rack-test (0.6.3)
+      rack (>= 1.0)
+    rb-fsevent (0.9.7)
+    rb-inotify (0.9.7)
+      ffi (>= 0.5.0)
+    ruby_dep (1.3.1)
+    shellany (0.0.1)
+    sinatra (1.4.7)
+      rack (~> 1.5)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    sinatra-contrib (1.4.7)
+      backports (>= 2.0)
+      multi_json
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.0)
+      tilt (>= 1.3, < 3)
+    slim (3.0.7)
+      temple (~> 0.7.6)
+      tilt (>= 1.3.3, < 2.1)
+    slop (3.6.0)
+    temple (0.7.7)
+    thor (0.19.1)
+    thread_safe (0.3.5)
+    tilt (2.0.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activerecord
+  guard-livereload
+  httparty
+  pg
+  pry-awesome_print
+  puma
+  rack-livereload
+  sinatra
+  sinatra-contrib
+  slim
+
+RUBY VERSION
+   ruby 2.3.1p112
+
+BUNDLED WITH
+   1.12.5

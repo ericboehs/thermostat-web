@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+set +e
+
+mkdir -p .git/safe
+bundle check || bundle install --path .bundle/bundle --binstubs .bundle/bundle/bin
+dropdb thermostat; createdb thermostat
+psql thermostat < db/thermostat.sql

@@ -1,0 +1,14 @@
+h2.uk-margin-top.uk-margin-bottom-remove Set Temperature
+
+.uk-margin.uk-margin-top.uk-panel.uk-panel-box
+  p = "Current Temperature: #{@thermostat['temperature']}F"
+  p = "Target Temperature: #{@thermostat['targetTemperature']}F"
+  p = "Fan: #{@thermostat['fanState'] == "true" ? "On" : "Off"}"
+  p = "Cool: #{@thermostat['coolState'] == "true" ? "On" : "Off"}"
+  p = "AC Last On: #{Time.at(@thermostat['coolLastOn']).strftime "%b %e, %l:%M %p"}"
+
+  form.uk-form.uk-form-stacked method="post"
+    fieldset data-uk-margin=""
+      .ukform-row.uk-margin-top
+        input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" value="#{@thermostat['targetTemperature']}" autofocus=true
+      button.uk-button.uk-button-success type="submit" Save

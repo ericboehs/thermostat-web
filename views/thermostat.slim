@@ -1,5 +1,3 @@
-h2.uk-margin-top.uk-margin-bottom-remove Set Temperature
-
 .uk-margin.uk-margin-top.uk-panel.uk-panel-box
   p = "Current Temperature: #{@thermostat['temperature']}F"
   p = "Target Temperature: #{@thermostat['targetTemperature']}F"
@@ -10,5 +8,6 @@ h2.uk-margin-top.uk-margin-bottom-remove Set Temperature
   form.uk-form.uk-form-stacked method="post"
     fieldset data-uk-margin=""
       .ukform-row.uk-margin-top
-        input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" value="#{@thermostat['targetTemperature']}" autofocus=true
-      button.uk-button.uk-button-success type="submit" Save
+        input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
+        button.uk-button.uk-button-success.uk-margin-left.uk-button-large type="submit" Save
+        a.uk-button.uk-button-primary.uk-margin-left.uk-button-large href="/" Refresh

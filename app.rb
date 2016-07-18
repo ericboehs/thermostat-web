@@ -25,6 +25,7 @@ end
 
 
 get '/' do
+  @notice = cookies.delete 'notice'
   @thermostat = JSON.parse particle_var 'info'
   slim :thermostat
 end
@@ -32,5 +33,10 @@ end
 
 post '/' do
   response = particle_func "targetTemp", params[:target_temp]
+  cookies['notice'] = "Temperature set to #{params[:target_temp]}F"
   redirect to('/')
+end
+
+get 'apple-touch.png' do
+  send_file File.join(settings.public_folder, 'apple-touch.png')
 end

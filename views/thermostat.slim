@@ -1,9 +1,11 @@
 .uk-margin.uk-margin-top.uk-panel.uk-panel-box
   p = "Current Temperature: #{@thermostat['temperature']}F"
   p = "Target Temperature: #{@thermostat['targetTemperature']}F"
-  p = "Fan: #{@thermostat['fanState'] == "true" ? "On" : "Off"}"
-  p = "Cool: #{@thermostat['coolState'] == "true" ? "On" : "Off"}"
-  p = "AC Last On: #{Time.at(@thermostat['coolLastOn']).strftime "%b %e, %l:%M %p"}"
+  p = "Mode: #{@thermostat['mode'].capitalize}"
+  p
+    = "Fan: #{@thermostat['fanState'] == true ? "On" : "Off"}, "
+    = "Cool: #{@thermostat['coolState'] == true ? "On" : "Off"}, "
+    = "Heat: #{@thermostat['heatState'] == true ? "On" : "Off"}"
 
   form.uk-form.uk-form-stacked method="post"
     fieldset data-uk-margin=""
@@ -11,3 +13,11 @@
         input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
         button.uk-button.uk-button-success.uk-margin-left.uk-button-large type="submit" Save
         a.uk-button.uk-button-primary.uk-margin-left.uk-button-large href="/" Refresh
+
+span Set Mode:
+- unless @thermostat['mode'] == 'off'
+  a.uk-button.uk-margin-left href="/set_mode/off" Off
+- unless @thermostat['mode'] == 'cool'
+  a.uk-button.uk-margin-left.uk-button-primary href="/set_mode/cool" Cool
+- unless @thermostat['mode'] == 'heat'
+  a.uk-button.uk-margin-left.uk-button-danger href="/set_mode/heat" Heat

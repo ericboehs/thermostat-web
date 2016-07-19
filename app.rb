@@ -31,6 +31,12 @@ get '/' do
 end
 
 
+get '/set_mode/:mode' do
+  response = particle_func "setMode", params[:mode]
+  cookies['notice'] = "Mode set to #{params[:mode].capitalize}"
+  redirect to('/')
+end
+
 post '/' do
   response = particle_func "targetTemp", params[:target_temp]
   cookies['notice'] = "Temperature set to #{params[:target_temp]}F"

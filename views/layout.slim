@@ -11,12 +11,14 @@ html
     script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"
     script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.26.4/js/uikit.min.js"
 
-    /javascript:
-    /  $(function() {
-    /    $('.timezone').each(function() { $(this).html(moment().format("Z")) } );
-    /    $('#timezone').val(moment().format("Z"));
-    /    $('.starts_at').each(function() { $(this).val(moment().format("Z")) } );
-    /  });
+    javascript:
+      $(function() {
+        refreshInterval = setInterval(function(){
+          $.get(window.location.href, {}, function(data, status, jqxhr) { $('html').html($.parseHTML(data)); });
+        }, 5000);
+
+        $('html').on('input', 'input', function(){ clearInterval(refreshInterval); });
+      });
   body
     .uk-container.uk-container-center.uk-margin-top
       h2.uk-margin-top.uk-margin-bottom-remove Boehs Family Thermostat

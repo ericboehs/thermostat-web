@@ -1,11 +1,31 @@
 .uk-margin.uk-margin-top.uk-panel.uk-panel-box
-  p = "Current Temperature: #{@thermostat['temperature']}F"
-  p = "Target Temperature: #{@thermostat['targetTemperature']}F"
-  p = "Mode: #{@thermostat['mode'].capitalize}"
   p
-    = "Fan: #{@thermostat['fanState'] == true ? "On" : "Off"}, "
-    = "Cool: #{@thermostat['coolState'] == true ? "On" : "Off"}, "
-    = "Heat: #{@thermostat['heatState'] == true ? "On" : "Off"}"
+    span.uk-text-bold Currently:&nbsp;
+    span
+      = @thermostat['temperature']
+      | &deg;F
+    span.uk-text-bold.uk-margin-left Target:&nbsp;
+    span
+      = @thermostat['targetTemperature']
+      | &deg;F
+    span.uk-text-bold.uk-margin-left Mode:&nbsp;
+    span class="#{"uk-badge" if @thermostat['mode'] == "cool"}#{"uk-badge uk-badge-danger" if @thermostat['mode'] == "heat"}" = @thermostat['mode'].capitalize
+  p
+    span.uk-text-bold Fan:&nbsp;
+    - if @thermostat['fanState']
+      span.uk-badge.uk-badge-success On
+    - else
+      span Off
+    span.uk-text-bold.uk-margin-left Cool:&nbsp;
+    - if @thermostat['coolState']
+      span.uk-badge.uk-badge-primary On
+    - else
+      span Off
+    span.uk-text-bold.uk-margin-left Heat:&nbsp;
+    - if @thermostat['heatState']
+      span.uk-badge.uk-badge-danger On
+    - else
+      span Off
 
   form.uk-form.uk-form-stacked method="post"
     fieldset data-uk-margin=""

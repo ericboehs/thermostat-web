@@ -38,7 +38,13 @@ get '/set_mode/:mode' do
   redirect to('/')
 end
 
-post '/thermostat_events' do
+get '/thermostat_events' do
+  @tzo = "-05:00"
+  @thermostat_events = ThermostatEvent.order(:created_at).limit 100
+  slim :thermostat_events
+end
+
+post '/thermostat_events/:event' do
   thermostat = JSON.parse particle_var 'info'
   ap thermostat
 
@@ -57,7 +63,9 @@ post '/thermostat_events' do
     event.start_thermostat_info = thermostat
   end
 
-  event.save
+  if (params[:event] == "on" && event.new_record?) || (params[:event] == "off" && !event.new_record?)
+    event.save
+  end
 
   status 200
 end

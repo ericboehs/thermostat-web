@@ -21,7 +21,7 @@ html
       });
   body
     .uk-container.uk-container-center.uk-margin-top
-      h2.uk-margin-top.uk-margin-bottom-remove Boehs Family Thermostat
+      h2.uk-margin-top.uk-margin-bottom-remove = @page_title ||= "Boehs Family Thermostat"
 
       div
         - if @notice

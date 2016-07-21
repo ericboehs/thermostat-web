@@ -1,4 +1,16 @@
 .uk-margin.uk-margin-top.uk-panel.uk-panel-box
+  - if @thermostat['heatWait'] > 0 && !@thermostat["heatState"]
+    - heat_wait = @thermostat['heatWait']
+    - if heat_wait > 60
+      .uk-alert = "Heat starting in #{heat_wait / 60} minutes and #{heat_wait % 60} seconds."
+    - else
+      .uk-alert = "Heat starting in #{heat_wait} seconds."
+  - if @thermostat['coolWait'] > 0 && !@thermostat["coolState"]
+    - cool_wait = @thermostat['coolWait']
+    - if cool_wait > 60
+      .uk-alert = "Cool starting in #{cool_wait / 60} minutes and #{cool_wait % 60} seconds."
+    - else
+      .uk-alert = "Cool starting in #{cool_wait} seconds."
   p
     span.uk-text-bold Currently:&nbsp;
     span
@@ -41,3 +53,6 @@ span Set Mode:
   a.uk-button.uk-margin-left.uk-button-primary href="/set_mode/cool" Cool
 - unless @thermostat['mode'] == 'heat'
   a.uk-button.uk-margin-left.uk-button-danger href="/set_mode/heat" Heat
+
+a.uk-button.uk-margin-left.uk-float-right href="/thermostat_events" Logs
+

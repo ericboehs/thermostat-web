@@ -10,11 +10,13 @@ a.uk-button.uk-button-primary.uk-margin-top href="/" Back
         th Mode
         th Duration
         th Start
-        th Start Temp
-        th Start Target
+        th Temp
+        th Target
+        th Outside
         th End
-        th End Temp
-        th End Target
+        th Temp
+        th Target
+        th Outside
     tbody
 
       - @thermostat_events.each do |event|
@@ -30,15 +32,17 @@ a.uk-button.uk-button-primary.uk-margin-top href="/" Back
           td
             - if event.duration_in_minutes
               = event.duration_in_minutes
-              |  Minutes
             - else
-              | On now
+              = ((Time.now - event.started_at) / 60).round
+            |  minutes
           td = event.started_at.localtime(@tzo).strftime "%B %e#{start_day_ordinal}, %l:%M %p"
           td = event.start_temperature
           td = event.start_target_temperature
+          td = event.start_forecast['currently']['temperature'].round
           td = end_day || "-"
           td = event.end_temperature || "-"
           td = event.end_target_temperature || "-"
+          td = event.end_forecast['currently']['temperature'].round rescue "-"
 - else
   .uk-alert.uk-alert-primary.uk-margin-top
     | No thermostat events.

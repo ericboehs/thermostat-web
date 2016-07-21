@@ -46,13 +46,14 @@ end
 
 post '/thermostat_events/:event' do
   thermostat = JSON.parse particle_var 'info'
-  ap thermostat
+  forecast = JSON.parse HTTParty.get("https://api.forecast.io/forecast/#{ENV.fetch 'FORECAST_IO_API_KEY'}/#{ENV.fetch 'FORECAST_IO_LAT_LON'}").body rescue nil
 
   if event = ThermostatEvent.find_by(ended_at: nil)
     event.ended_at = Time.now.utc
     event.end_temperature = thermostat['temperature']
     event.end_target_temperature = thermostat['targetTemperature']
     event.end_thermostat_info = thermostat
+    event.end_forecast = forecast
     event.duration_in_minutes = (event.ended_at - event.started_at) / 60
   else
     event = ThermostatEvent.new
@@ -61,6 +62,7 @@ post '/thermostat_events/:event' do
     event.start_temperature = thermostat['temperature']
     event.start_target_temperature = thermostat['targetTemperature']
     event.start_thermostat_info = thermostat
+    event.start_forecast = forecast
   end
 
   if (params[:event] == "on" && event.new_record?) || (params[:event] == "off" && !event.new_record?)

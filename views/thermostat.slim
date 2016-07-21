@@ -30,7 +30,7 @@
   form.uk-form.uk-form-stacked method="post"
     fieldset data-uk-margin=""
       .ukform-row.uk-margin-top
-        input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
+        input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" min=60 max=80 pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
         button.uk-button.uk-button-success.uk-margin-left.uk-button-large type="submit" Save
         a.uk-button.uk-button-primary.uk-margin-left.uk-button-small.uk-margin-top href="/" Refresh
 

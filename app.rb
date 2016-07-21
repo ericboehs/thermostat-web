@@ -9,7 +9,7 @@ require 'sinatra/cookies'
 require 'slim'
 require 'httparty'
 
-# ActiveRecord::Base.establish_connection ENV['POOLED_DATABASE_URL'] || ENV['DATABASE_URL']
+ActiveRecord::Base.establish_connection ENV['POOLED_DATABASE_URL'] || ENV['DATABASE_URL']
 
 def particle_func function, argument
   HTTParty.post("https://api.particle.io/v1/devices/#{ENV.fetch('PARTICLE_DEVICE_ID')}/#{function}", timeout: 5, body: {
@@ -27,6 +27,7 @@ end
 get '/' do
   @notice = cookies.delete 'notice'
   @thermostat = JSON.parse particle_var 'info'
+  puts @thermostat
   slim :thermostat
 end
 
@@ -37,24 +38,48 @@ get '/set_mode/:mode' do
   redirect to('/')
 end
 
-post '/smartthings/:mode' do
-  st_base_url = "https://graph.api.smartthings.com/api/smartapps/installations/#{ENV.fetch 'SMARTTHINGS_APPLICATION_ID'}/switches/#{ENV.fetch 'SMARTTHINGS_SWITCH_ID'}"
-  headers = { "Authorization" => "Bearer #{ENV.fetch('SMARTTHINGS_ACCESS_TOKEN')}" }
+post '/thermostat_events' do
+  thermostat = JSON.parse particle_var 'info'
+  ap thermostat
 
-  if params[:mode] == "cool_on"
-    HTTParty.post(
-      "#{st_base_url}/on", timeout: 5, headers: headers
-    ).tap { |response| raise response.code.to_s unless response.code == 201 }
+  if event = ThermostatEvent.find_by(ended_at: nil)
+    event.ended_at = Time.now.utc
+    event.end_temperature = thermostat['temperature']
+    event.end_target_temperature = thermostat['targetTemperature']
+    event.end_thermostat_info = thermostat
+    event.duration_in_minutes = (event.ended_at - event.started_at) / 60
+  else
+    event = ThermostatEvent.new
+    event.mode = thermostat['mode']
+    event.started_at = Time.now.utc
+    event.start_temperature = thermostat['temperature']
+    event.start_target_temperature = thermostat['targetTemperature']
+    event.start_thermostat_info = thermostat
   end
 
-  if params[:mode] == "cool_off"
-    HTTParty.post(
-      "#{st_base_url}/off", timeout: 5, headers: headers
-    ).tap { |response| raise response.code.to_s unless response.code == 201 }
-  end
+  event.save
 
   status 200
 end
+
+# post '/smartthings/:mode' do
+#   st_base_url = "https://graph.api.smartthings.com/api/smartapps/installations/#{ENV.fetch 'SMARTTHINGS_APPLICATION_ID'}/switches/#{ENV.fetch 'SMARTTHINGS_SWITCH_ID'}"
+#   headers = { "Authorization" => "Bearer #{ENV.fetch('SMARTTHINGS_ACCESS_TOKEN')}" }
+#
+#   if params[:mode] == "cool_on"
+#     HTTParty.post(
+#       "#{st_base_url}/on", timeout: 5, headers: headers
+#     ).tap { |response| raise response.code.to_s unless response.code == 201 }
+#   end
+#
+#   if params[:mode] == "cool_off"
+#     HTTParty.post(
+#       "#{st_base_url}/off", timeout: 5, headers: headers
+#     ).tap { |response| raise response.code.to_s unless response.code == 201 }
+#   end
+#
+#   status 200
+# end
 
 post '/' do
   response = particle_func "targetTemp", params[:target_temp]
@@ -64,4 +89,7 @@ end
 
 get 'apple-touch.png' do
   send_file File.join(settings.public_folder, 'apple-touch.png')
+end
+
+class ThermostatEvent < ActiveRecord::Base
 end

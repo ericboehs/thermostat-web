@@ -40,7 +40,7 @@ end
 
 get '/thermostat_events' do
   @tzo = "-05:00"
-  @thermostat_events = ThermostatEvent.order(created_at: :asc).limit 200
+  @thermostat_events = ThermostatEvent.order(created_at: :desc).limit 200
   slim :thermostat_events
 end
 

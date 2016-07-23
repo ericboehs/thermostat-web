@@ -25,17 +25,30 @@ end
 
 
 get '/' do
-  @notice = cookies.delete 'notice'
-  @thermostat = JSON.parse particle_var 'info'
-  puts @thermostat
-  slim :thermostat
+  begin
+    @error = cookies.delete 'error'
+    @notice = cookies.delete 'notice'
+    @thermostat = JSON.parse particle_var 'info'
+    puts @thermostat
+    slim :thermostat
+  rescue => e
+    puts e
+    @error = "Error! Could not connect to thermostat. Is it online?"
+    slim :thermostat
+  end
 end
 
 
 get '/set_mode/:mode' do
-  response = particle_func "setMode", params[:mode]
-  cookies['notice'] = "Mode set to #{params[:mode].capitalize}"
-  redirect to('/')
+  begin
+    response = particle_func "setMode", params[:mode]
+    cookies['notice'] = "Mode set to #{params[:mode].capitalize}"
+    redirect to('/')
+  rescue => e
+    puts e
+    cookies['error'] = "Error! Mode not set."
+    redirect to('/')
+  end
 end
 
 get '/thermostat_events' do
@@ -92,9 +105,15 @@ end
 # end
 
 post '/' do
-  response = particle_func "targetTemp", params[:target_temp]
-  cookies['notice'] = "Temperature set to #{params[:target_temp]}F"
-  redirect to('/')
+  begin
+    response = particle_func "targetTemp", params[:target_temp]
+    cookies['notice'] = "Temperature set to #{params[:target_temp]}F"
+    redirect to('/')
+  rescue => e
+    puts e
+    cookies['error'] = "Error! Temperature not set."
+    redirect to('/')
+  end
 end
 
 get 'apple-touch.png' do

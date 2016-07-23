@@ -1,58 +1,60 @@
-.uk-margin.uk-margin-top.uk-panel.uk-panel-box
-  - if @thermostat['heatWait'] > 0 && !@thermostat["heatState"]
-    - heat_wait = @thermostat['heatWait']
-    - if heat_wait > 60
-      .uk-alert = "Heat starting in #{heat_wait / 60} minutes and #{heat_wait % 60} seconds."
-    - else
-      .uk-alert = "Heat starting in #{heat_wait} seconds."
-  - if @thermostat['coolWait'] > 0 && !@thermostat["coolState"]
-    - cool_wait = @thermostat['coolWait']
-    - if cool_wait > 60
-      .uk-alert = "Cool starting in #{cool_wait / 60} minutes and #{cool_wait % 60} seconds."
-    - else
-      .uk-alert = "Cool starting in #{cool_wait} seconds."
-  p
-    span.uk-text-bold Currently:&nbsp;
-    span
-      = @thermostat['temperature']
-      | &deg;F
-    span.uk-text-bold.uk-margin-left Target:&nbsp;
-    span
-      = @thermostat['targetTemperature']
-      | &deg;F
-    span.uk-text-bold.uk-margin-left Mode:&nbsp;
-    span class="#{"uk-badge" if @thermostat['mode'] == "cool"}#{"uk-badge uk-badge-danger" if @thermostat['mode'] == "heat"}" = @thermostat['mode'].capitalize
-  p
-    span.uk-text-bold Fan:&nbsp;
-    - if @thermostat['fanState']
-      span.uk-badge.uk-badge-success On
-    - else
-      span Off
-    span.uk-text-bold.uk-margin-left Cool:&nbsp;
-    - if @thermostat['coolState']
-      span.uk-badge.uk-badge-primary On
-    - else
-      span Off
-    span.uk-text-bold.uk-margin-left Heat:&nbsp;
-    - if @thermostat['heatState']
-      span.uk-badge.uk-badge-danger On
-    - else
-      span Off
+- if @thermostat
+  .uk-margin.uk-margin-top.uk-panel.uk-panel-box
+    - if @thermostat['heatWait'] > 0 && !@thermostat["heatState"]
+      - heat_wait = @thermostat['heatWait']
+      - if heat_wait > 60
+        .uk-alert = "Heat starting in #{heat_wait / 60} minutes and #{heat_wait % 60} seconds."
+      - else
+        .uk-alert = "Heat starting in #{heat_wait} seconds."
+    - if @thermostat['coolWait'] > 0 && !@thermostat["coolState"]
+      - cool_wait = @thermostat['coolWait']
+      - if cool_wait > 60
+        .uk-alert = "Cool starting in #{cool_wait / 60} minutes and #{cool_wait % 60} seconds."
+      - else
+        .uk-alert = "Cool starting in #{cool_wait} seconds."
+    p
+      span.uk-text-bold Currently:&nbsp;
+      span
+        = @thermostat['temperature']
+        | &deg;F
+      span.uk-text-bold.uk-margin-left Target:&nbsp;
+      span
+        = @thermostat['targetTemperature']
+        | &deg;F
+      span.uk-text-bold.uk-margin-left Mode:&nbsp;
+      span class="#{"uk-badge" if @thermostat['mode'] == "cool"}#{"uk-badge uk-badge-danger" if @thermostat['mode'] == "heat"}" = @thermostat['mode'].capitalize
+    p
+      span.uk-text-bold Fan:&nbsp;
+      - if @thermostat['fanState']
+        span.uk-badge.uk-badge-success On
+      - else
+        span Off
+      span.uk-text-bold.uk-margin-left Cool:&nbsp;
+      - if @thermostat['coolState']
+        span.uk-badge.uk-badge-primary On
+      - else
+        span Off
+      span.uk-text-bold.uk-margin-left Heat:&nbsp;
+      - if @thermostat['heatState']
+        span.uk-badge.uk-badge-danger On
+      - else
+        span Off
 
-  form.uk-form.uk-form-stacked method="post"
-    fieldset data-uk-margin=""
-      .ukform-row.uk-margin-top
-        input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" min=60 max=80 pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
-        button.uk-button.uk-button-success.uk-margin-left.uk-button-large type="submit" Save
-        a.uk-button.uk-button-primary.uk-margin-left.uk-button-small.uk-margin-top href="/" Refresh
+    form.uk-form.uk-form-stacked method="post"
+      fieldset data-uk-margin=""
+        .ukform-row.uk-margin-top
+          input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" min=60 max=80 pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
+          button.uk-button.uk-button-success.uk-margin-left.uk-button-large type="submit" Save
+          a.uk-button.uk-button-primary.uk-margin-left.uk-button-small.uk-margin-top href="/" Refresh
 
-span Set Mode:
-- unless @thermostat['mode'] == 'off'
-  a.uk-button.uk-margin-left href="/set_mode/off" Off
-- unless @thermostat['mode'] == 'cool'
-  a.uk-button.uk-margin-left.uk-button-primary href="/set_mode/cool" Cool
-- unless @thermostat['mode'] == 'heat'
-  a.uk-button.uk-margin-left.uk-button-danger href="/set_mode/heat" Heat
+  span Set Mode:
+  - unless @thermostat['mode'] == 'off'
+    a.uk-button.uk-margin-left href="/set_mode/off" Off
+  - unless @thermostat['mode'] == 'cool'
+    a.uk-button.uk-margin-left.uk-button-primary href="/set_mode/cool" Cool
+  - unless @thermostat['mode'] == 'heat'
+    a.uk-button.uk-margin-left.uk-button-danger href="/set_mode/heat" Heat
 
-a.uk-button.uk-margin-left.uk-float-right href="/thermostat_events" Logs
-
+  a.uk-button.uk-margin-left.uk-float-right href="/thermostat_events" Logs
+- else
+  a.uk-button.uk-button-primary href="/" Refresh

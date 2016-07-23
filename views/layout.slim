@@ -27,4 +27,7 @@ html
         - if @notice
             .uk-alert.uk-alert-success.uk-margin-top
               = "#{@notice}"
+        - if @error
+            .uk-alert.uk-alert-danger.uk-margin-top
+              = "#{@error}"
         == yield

@@ -42,10 +42,12 @@
 
     form.uk-form.uk-form-stacked method="post"
       fieldset data-uk-margin=""
-        .ukform-row.uk-margin-top
-          input.uk-form-large.uk-form-width-small placeholder="Target Temperature" type="number" name="target_temp" min=60 max=80 pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
-          button.uk-button.uk-button-success.uk-margin-left.uk-button-large type="submit" Save
-          a.uk-button.uk-button-primary.uk-margin-left.uk-button-small.uk-margin-top href="/" Refresh
+        .ukform-row.uk-margin
+          input.uk-form-large.uk-width-1-6.uk-width-large-1-10 placeholder="Target Temperature" type="number" name="target_temp" min=60 max=80 pattern="[0-9]*" value="#{@thermostat['targetTemperature']}" autofocus=true
+          | &nbsp;in&nbsp;
+          input.uk-form-large.uk-width-1-6.uk-width-large-1-10 type="number" name="set_in_minutes" min=0 max=999 pattern="[0-9]*" value="0"
+          | &nbsp;minutes&nbsp;&nbsp;
+          button.uk-button.uk-button-success.uk-button-large type="submit" Set
 
   span Set Mode:
   - unless @thermostat['mode'] == 'off'
@@ -58,3 +60,27 @@
   a.uk-button.uk-margin-left.uk-float-right href="/thermostat_events" Logs
 - else
   a.uk-button.uk-button-primary href="/" Refresh
+
+- if @upcoming_targets.any?
+  h2.uk-margin-top.uk-margin-bottom-remove Scheduled Temperatures
+  table.uk-table
+    thead
+      tr
+        th
+        th
+        th
+    tbody
+      - @upcoming_targets.each do |target|
+        tr.uk-table-middle
+          td
+            = target["args"][1]
+            | &deg;F
+          td
+            - run_at = target["run_at"].localtime ENV.fetch('TZ_OFFSET', "+00:00")
+            - time_now = Time.now.localtime ENV.fetch('TZ_OFFSET', "+00:00")
+            - run_at_strf = "%l:%M %p"
+            - run_at_strf += " on %b %d" unless run_at.day == time_now.day
+            - run_at_strf += ", %Y" unless run_at.year == time_now.year
+            = run_at.strftime run_at_strf
+          td.uk-text-right
+            a.uk-button.uk-button-link.uk-text-danger href="/upcoming_targets/#{target['job_id']}/delete" Remove

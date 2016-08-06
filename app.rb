@@ -1,4 +1,5 @@
 require './lib/dotenv'
+require './lib/particle'
 require 'bundler/setup'
 require 'awesome_print'
 require 'pg'
@@ -11,21 +12,17 @@ require 'httparty'
 
 ActiveRecord::Base.establish_connection ENV['POOLED_DATABASE_URL'] || ENV['DATABASE_URL']
 
-def particle_func function, argument
-  HTTParty.post("https://api.particle.io/v1/devices/#{ENV.fetch('PARTICLE_DEVICE_ID')}/#{function}", timeout: 5, body: {
-    arg: argument, access_token: ENV.fetch('PARTICLE_ACCESS_TOKEN')
-  }).tap { |response| raise response.code.to_s unless response.code == 200 }['result']
-end
+require 'que'
+Que.connection = ActiveRecord
+Que.migrate!
 
-def particle_var variable
-  HTTParty.get(
-    "https://api.particle.io/v1/devices/#{ENV.fetch('PARTICLE_DEVICE_ID')}/#{variable}?access_token=#{ENV.fetch('PARTICLE_ACCESS_TOKEN')}", timeout: 5
-  ).tap { |response| raise response.code.to_s unless response.code == 200 }['result']
-end
+require './jobs/thermostat_function_job'
 
+include Particle
 
 get '/' do
   begin
+    @upcoming_targets = Que.execute("select * from que_jobs where job_class = 'ThermostatFunctionJob'")
     @error = cookies.delete 'error'
     @notice = cookies.delete 'notice'
     @thermostat = JSON.parse particle_var 'info'
@@ -49,6 +46,11 @@ get '/set_mode/:mode' do
     cookies['error'] = "Error! Mode not set."
     redirect to('/')
   end
+end
+
+get '/upcoming_targets/:id/delete' do
+  Que.execute "DELETE FROM que_jobs where job_id = $1;", [params[:id]]
+  redirect to('/')
 end
 
 get '/thermostat_events' do
@@ -106,8 +108,13 @@ end
 
 post '/' do
   begin
-    response = particle_func "targetTemp", params[:target_temp]
-    cookies['notice'] = "Temperature set to #{params[:target_temp]}F"
+    run_at = Time.at(Time.now.utc.to_i + params[:set_in_minutes].to_i * 60).utc
+    ThermostatFunctionJob.enqueue "targetTemp", params[:target_temp], run_at: run_at
+    if params[:set_in_minutes] == "0"
+      cookies['notice'] = "Temperature set to #{params[:target_temp]}F"
+    else
+      cookies['notice'] = "Temperature will be set to #{params[:target_temp]}F in #{params[:set_in_minutes]} minutes"
+    end
     redirect to('/')
   rescue => e
     puts e

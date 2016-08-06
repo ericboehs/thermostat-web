@@ -11,6 +11,7 @@ gem 'activerecord'
 gem 'puma'
 gem 'slim'
 gem 'httparty'
+gem 'que'
 
 gem 'sinatra-contrib'
 gem 'pry-awesome_print'

@@ -6,4 +6,6 @@ preload_app!
 
 on_worker_boot do
   ActiveRecord::Base.establish_connection ENV['DATABASE_URL']
+
+  Que.mode = :async
 end

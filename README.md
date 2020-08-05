@@ -1,4 +1,6 @@
 # Web interface to my custom built thermostat
+<img src="https://files.boehs.com/thermostat-mobile-screenshot.png" width=384 />
+
 
 ## Installation
 
